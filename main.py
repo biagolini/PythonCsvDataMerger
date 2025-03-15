@@ -2,9 +2,8 @@ import os
 import pandas as pd
 import random
 
-# Define here the column names to be merged
-# This configuration makes the script easier to port to different contexts
-columns_to_merge = ["Title", "Prompt"]
+# Define the file format to save ('xlsx' or 'csv')
+save_format = "xlsx"  # Default format
 
 # Define the folder path containing the CSV files
 input_folder_path = "./input"
@@ -12,8 +11,14 @@ input_folder_path = "./input"
 # Define the folder to export
 output_folder_path = "./output"
 
+# Get the last folder name from the input path
+last_folder_name = os.path.basename(os.path.normpath(input_folder_path))
+
 # List to store the DataFrames
 dataframes = []
+
+# Define here the column names to be merged
+columns_to_merge = ["Title", "Prompt"]
 
 # Loop to process each CSV file in the folder
 for file_name in os.listdir(input_folder_path):
@@ -42,12 +47,18 @@ num_rows = len(combined_df)  # Total number of rows in the DataFrame
 random_ids = random.sample(range(1, num_rows + 1), num_rows)  # Generate unique and random IDs
 combined_df["Random ID"] = random_ids  # Add the column to the DataFrame
 
-# Save the combined DataFrame to a CSV file with appropriate encoding
-filename = f"{output_folder_path}/combined_ideas.csv"
-combined_df.to_csv(filename, index=False, encoding="utf-8-sig")
-print(f"Combined file saved as {filename}")
+# Define output filenames using the last folder name
+csv_filename = f"{output_folder_path}/{last_folder_name}.csv"
+xlsx_filename = f"{output_folder_path}/{last_folder_name}.xlsx"
 
-# Save the combined DataFrame to an Excel file
-filename = f"{output_folder_path}/combined_ideas.xlsx"
-combined_df.to_excel(filename, index=False, engine="openpyxl")
-print(f"Combined file saved as {filename}")
+# Save based on selected format
+if save_format.lower() == "xlsx":
+    combined_df.to_excel(xlsx_filename, index=False, engine="openpyxl")
+    print(f"Combined file saved as {xlsx_filename}")
+elif save_format.lower() == "csv":
+    combined_df.to_csv(csv_filename, index=False, encoding="utf-8-sig")
+    print(f"Combined file saved as {csv_filename}")
+else:
+    print("Unknown save format. Defaulting to CSV.")
+    combined_df.to_csv(csv_filename, index=False, encoding="utf-8-sig")
+    print(f"Combined file saved as {csv_filename}")
