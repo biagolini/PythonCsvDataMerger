@@ -4,18 +4,21 @@ import random
 
 # Define here the column names to be merged
 # This configuration makes the script easier to port to different contexts
-columns_to_merge = ["Title", "Prompt", "Visual"]
+columns_to_merge = ["Title", "Prompt"]
 
 # Define the folder path containing the CSV files
-folder_path = "./input_csv_folder"
+input_folder_path = "./input"
+
+# Define the folder to export
+output_folder_path = "./output"
 
 # List to store the DataFrames
 dataframes = []
 
 # Loop to process each CSV file in the folder
-for file_name in os.listdir(folder_path):
+for file_name in os.listdir(input_folder_path):
     if file_name.endswith(".csv"):
-        file_path = os.path.join(folder_path, file_name)
+        file_path = os.path.join(input_folder_path, file_name)
         try:
             # Read the CSV file with appropriate encoding
             df = pd.read_csv(file_path, encoding="utf-8-sig")
@@ -40,11 +43,11 @@ random_ids = random.sample(range(1, num_rows + 1), num_rows)  # Generate unique 
 combined_df["Random ID"] = random_ids  # Add the column to the DataFrame
 
 # Save the combined DataFrame to a CSV file with appropriate encoding
-output_file_csv = "combined_ideas.csv"
-combined_df.to_csv(output_file_csv, index=False, encoding="utf-8-sig")
-print(f"Combined file saved as {output_file_csv}")
+filename = f"{output_folder_path}/combined_ideas.csv"
+combined_df.to_csv(filename, index=False, encoding="utf-8-sig")
+print(f"Combined file saved as {filename}")
 
 # Save the combined DataFrame to an Excel file
-output_file_excel = "combined_ideas.xlsx"
-combined_df.to_excel(output_file_excel, index=False, engine="openpyxl")
-print(f"Combined file saved as {output_file_excel}")
+filename = f"{output_folder_path}/combined_ideas.xlsx"
+combined_df.to_excel(filename, index=False, engine="openpyxl")
+print(f"Combined file saved as {filename}")
